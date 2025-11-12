@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Count, Sum, F
 from django.db.models.functions import TruncMonth
 from .models import Admin, Pelanggan, Kategori, Produk, Transaksi, DetailTransaksi, DiskonPelanggan, Notifikasi
-from .forms import AdminLoginForm, PelangganForm, KategoriForm, ProdukForm, TransaksiForm, DiskonPelangganForm, NotifikasiForm
+from .forms import AdminLoginForm, PelangganForm, KategoriForm, ProdukForm, TransaksiForm, DiskonPelangganForm, NotifikasiForm, PelangganRegistrationForm
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import datetime
