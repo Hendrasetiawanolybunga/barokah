@@ -1,65 +1,26 @@
-/* Web Portal CSS */
+/* core/static/core/css/web.css */
 
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, #059212 0%, #90EE90 100%);
+/* --- Warna Aksen --- */
+:root {
+    --main-green: #38a169;
+    --light-green: #e6ffe6;
+    --dark-color: #2c3e50;
 }
 
-.hero-section h1 {
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+/* Mengatur warna utama */
+.text-success, .btn-outline-success {
+    color: var(--main-green) !important;
 }
 
-/* Product Cards */
-.product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
+.bg-success, .btn-success {
+    background-color: var(--main-green) !important;
+    border-color: var(--main-green) !important;
 }
 
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.product-card .card-img-top {
-    border-bottom: 1px solid #eee;
-}
-
-/* Feature Boxes */
-.feature-box {
-    transition: transform 0.3s ease;
-}
-
-.feature-box:hover {
-    transform: translateY(-5px);
-}
-
-/* Contact Section */
-.contact-section .contact-info i {
-    color: #059212;
-}
-
-/* FAQ Section */
-.accordion-button:not(.collapsed) {
-    background-color: #90EE90;
-    color: #059212;
-}
-
-.accordion-button:focus {
-    border-color: #059212;
-    box-shadow: 0 0 0 0.2rem rgba(5, 146, 18, 0.25);
-}
-
-/* Footer */
-footer a {
-    color: #333;
-    text-decoration: none;
-}
-
-footer a:hover {
-    color: #059212;
-    text-decoration: underline;
+/* --- Layout Dasar --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f9fb;
 }
 
 /* Navbar */
@@ -67,68 +28,79 @@ footer a:hover {
     font-size: 1.5rem;
 }
 
-.navbar .badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+.navbar-nav .nav-link {
+    color: var(--dark-color) !important;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-/* Breadcrumb */
-.breadcrumb {
-    background-color: #f8f9fa;
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+    color: var(--main-green) !important;
 }
 
-.breadcrumb-item a {
-    color: #059212;
+/* Navbar Cart Count Badge */
+.bg-danger {
+    background-color: #e74c3c !important;
 }
 
-/* Buttons */
-.btn-success {
-    background-color: #059212;
-    border-color: #059212;
+/* Hero Section */
+.hero-section {
+    position: relative;
+    color: white;
+    background-color: var(--main-green); /* Fallback */
 }
 
-.btn-success:hover {
-    background-color: #047a0f;
-    border-color: #047a0f;
+.hero-section h1, .hero-section p {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.btn-outline-success {
-    color: #059212;
-    border-color: #059212;
+/* Card Produk */
+.card-img-top {
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
 }
 
-.btn-outline-success:hover {
-    background-color: #059212;
-    border-color: #059212;
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* Tables */
-.table-success {
-    --bs-table-bg: #90EE90;
-    --bs-table-striped-bg: #83e285;
-    --bs-table-striped-color: #000;
-    --bs-table-active-bg: #76d67a;
-    --bs-table-active-color: #000;
-    --bs-table-hover-bg: #7ddc7f;
-    --bs-table-hover-color: #000;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Responsive */
-@media (max-width: 767.98px) {
+/* Footer */
+footer a:hover {
+    color: white !important;
+}
+
+/* --- RESPONSIVE MOBILE VIEW --- */
+@media (max-width: 991.98px) {
+    /* Navbar */
+    .navbar-collapse {
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    /* Hero Section */
     .hero-section {
-        text-align: center;
+        min-height: 300px !important;
+    }
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .hero-section p {
+        font-size: 1rem;
     }
     
-    .hero-section .btn {
-        margin-bottom: 20px;
+    /* Product Grid */
+    .row-cols-md-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
     
-    .feature-box {
-        margin-bottom: 20px;
-    }
-    
-    .contact-section .map-container {
-        margin-top: 20px;
+    .row-cols-lg-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }

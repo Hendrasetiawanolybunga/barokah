@@ -4,14 +4,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
-
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Count, Sum, F
 from django.db.models.functions import TruncMonth
 from .models import Admin, Pelanggan, Kategori, Produk, Transaksi, DetailTransaksi, DiskonPelanggan, Notifikasi
-from .forms import AdminLoginForm, PelangganForm, KategoriForm, ProdukForm, TransaksiForm, DiskonPelangganForm, NotifikasiForm, PelangganRegistrationForm
+from .forms import AdminLoginForm, PelangganForm, KategoriForm, ProdukForm, TransaksiForm, DiskonPelangganForm, NotifikasiForm
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import datetime
@@ -874,155 +873,3 @@ def cetak_laporan_loyal_pdf(request):
     return response
 
 
-# ==================== PORTAL PELANGGAN ====================
-def beranda_pelanggan(request):
-    # Ensure cart exists in session (BEST PRACTICE)
-    if 'cart' not in request.session:
-        request.session['cart'] = {}
-    
-    # Get featured products (for example, top 4 products)
-    produk_unggulan = Produk.objects.filter(stok_produk__gt=0).order_by('-id')[:4]
-    
-    context = {
-        'produk_unggulan': produk_unggulan,
-    }
-    
-    return render(request, 'web/beranda.html', context)
-
-
-def daftar_produk_web(request):
-    # Get all products with stock > 0
-    produk_list = Produk.objects.filter(stok_produk__gt=0).select_related('kategori')
-    
-    context = {
-        'produk_list': produk_list,
-    }
-    
-    return render(request, 'web/list_produk.html', context)
-
-
-def detail_produk_web(request, id):
-    # Get product by id
-    produk = get_object_or_404(Produk, id=id, stok_produk__gt=0)
-    
-    context = {
-        'produk': produk,
-    }
-    
-    return render(request, 'web/detail_produk.html', context)
-
-
-def keranjang_web(request):
-    # Get cart from session
-    cart = request.session.get('cart', {})
-    
-    # Get product details from database
-    product_ids = list(cart.keys())
-    products = Produk.objects.filter(id__in=product_ids, stok_produk__gt=0)
-    
-    # Prepare cart items with product details
-    cart_items = []
-    total = 0
-    
-    for product in products:
-        quantity = cart[str(product.id)]
-        subtotal = product.harga_produk * quantity
-        total += subtotal
-        
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'subtotal': subtotal,
-        })
-    
-    context = {
-        'cart_items': cart_items,
-        'total': total,
-    }
-    
-    return render(request, 'web/keranjang.html', context)
-
-
-def login_web(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        
-        # Authenticate against Pelanggan model
-        try:
-            pelanggan = Pelanggan.objects.get(username=username, password=password)
-            # Store user info in session
-            request.session['pelanggan_id'] = pelanggan.id
-            request.session['pelanggan_nama'] = pelanggan.nama_pelanggan
-            return redirect('beranda_pelanggan')
-        except Pelanggan.DoesNotExist:
-            # Invalid credentials
-            return render(request, 'web/login.html', {'error': 'Username atau password salah'})
-    
-    return render(request, 'web/login.html')
-
-
-def register_web(request):
-    if request.method == 'POST':
-        form = PelangganRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login_web')
-    else:
-        form = PelangganRegistrationForm()
-    
-    return render(request, 'web/register.html', {'form': form})
-
-
-def logout_web(request):
-    # Clear session data
-    request.session.flush()
-    return redirect('beranda_pelanggan')
-
-
-def akun_saya_web(request):
-    # Check if user is logged in
-    if 'pelanggan_id' not in request.session:
-        return redirect('login_web')
-    
-    pelanggan_id = request.session['pelanggan_id']
-    pelanggan = get_object_or_404(Pelanggan, id=pelanggan_id)
-    
-    context = {
-        'pelanggan': pelanggan,
-    }
-    
-    return render(request, 'web/akun_saya.html', context)
-
-
-@require_POST
-def add_to_cart(request, product_id):
-    # Get product
-    product = get_object_or_404(Produk, id=product_id, stok_produk__gt=0)
-    
-    # Get quantity from POST data
-    quantity = int(request.POST.get('quantity', 1))
-    
-    # Initialize cart in session if not exists
-    if 'cart' not in request.session:
-        request.session['cart'] = {}
-    
-    cart = request.session['cart']
-    
-    # Add or update product in cart
-    product_id_str = str(product_id)
-    if product_id_str in cart:
-        cart[product_id_str] += quantity
-    else:
-        cart[product_id_str] = quantity
-    
-    # Save cart to session
-    request.session['cart'] = cart
-    request.session.modified = True
-    
-    # Return JSON response
-    return JsonResponse({
-        'success': True,
-        'message': f'{product.nama_produk} berhasil ditambahkan ke keranjang',
-        'cart_count': sum(cart.values())
-    })

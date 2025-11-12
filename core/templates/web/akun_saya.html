@@ -1,56 +1,86 @@
 {% extends 'web/basis_web.html' %}
+{% load static %}
 
-{% block title %}Akun Saya - UD Barokah Jaya Beton{% endblock %}
+{% block title %}Akun Saya{% endblock title %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'beranda_pelanggan' %}">Beranda</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Akun Saya</li>
-                </ol>
-            </nav>
+<section class="container my-5">
+    <h1 class="text-center mb-4 text-success fw-bold">Pengaturan Akun Saya</h1>
+
+    {% if messages %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
     </div>
-    
-    <div class="row">
-        <div class="col-12">
-            <h1>Akun Saya</h1>
-            
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Informasi Profil</h5>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white fw-bold">Update Informasi Profil</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="update_profil" value="1"> 
+
+                        <div class="mb-3">
+                            <label class="form-label">Username:</label>
+                            <input type="text" class="form-control" value="{{ pelanggan.username }}" disabled>
+                            <div class="form-text">Username dan Email tidak dapat diubah.</div>
                         </div>
-                        <div class="card-body">
-                            <p><strong>Nama:</strong> {{ pelanggan.nama_pelanggan }}</p>
-                            <p><strong>Email:</strong> {{ pelanggan.email }}</p>
-                            <p><strong>No. HP:</strong> {{ pelanggan.no_hp }}</p>
-                            <p><strong>Alamat:</strong> {{ pelanggan.alamat }}</p>
-                            <p><strong>Tanggal Lahir:</strong> {{ pelanggan.tanggal_lahir }}</p>
-                            <a href="#" class="btn btn-outline-success">Edit Profil</a>
+
+                        {% for field in profile_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
                         </div>
-                    </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success fw-bold">
+                                <i class="bi bi-arrow-repeat"></i> Simpan Perubahan Profil
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Riwayat Pesanan</h5>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-danger text-white fw-bold">Ganti Password</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="update_password" value="1"> 
+                        
+                        {% for field in password_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
                         </div>
-                        <div class="card-body">
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>
-                                Fitur riwayat pesanan akan tersedia setelah implementasi sistem transaksi.
-                            </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-danger fw-bold">
+                                <i class="bi bi-lock-fill"></i> Ganti Password
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+</section>
+{% endblock content %}

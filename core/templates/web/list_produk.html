@@ -1,52 +1,36 @@
 {% extends 'web/basis_web.html' %}
-
-{% block title %}Produk - UD Barokah Jaya Beton{% endblock %}
+{% load static %}
+{% load humanize %}
+{% block title %}Katalog Produk{% endblock title %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'beranda_pelanggan' %}">Beranda</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Produk</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
+<section class="container my-5">
+    <h1 class="text-center mb-4 text-success fw-bold">Katalog Produk</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb justify-content-center">
+            <li class="breadcrumb-item"><a href="{% url 'home_web' %}" class="text-success">Beranda</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Produk</li>
+        </ol>
+    </nav>
     
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">Katalog Produk</h1>
-        </div>
-    </div>
-    
-    <div class="row">
+    {% if produk_list %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for produk in produk_list %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 product-card">
-                {% if produk.foto_produk %}
-                    <img src="{{ produk.foto_produk.url }}" class="card-img-top" alt="{{ produk.nama_produk }}" style="height: 200px; object-fit: cover;">
-                {% else %}
-                    <img src="https://placehold.co/300x200/90EE90/059212?text={{ produk.nama_produk|urlencode }}" class="card-img-top" alt="{{ produk.nama_produk }}" style="height: 200px; object-fit: cover;">
-                {% endif %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ produk.foto_produk.url }}" class="card-img-top img-fluid" alt="{{ produk.nama_produk }}" style="height: 250px; object-fit: cover;">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ produk.nama_produk }}</h5>
-                    <p class="card-text">{{ produk.deskripsi_produk|truncatewords:15 }}</p>
-                    <div class="mt-auto">
-                        <p class="card-text fw-bold text-success">Rp {{ produk.harga_produk|floatformat:2 }}</p>
-                        <a href="{% url 'detail_produk_web' produk.id %}" class="btn btn-success w-100">Lihat Detail</a>
-                    </div>
+                    <h5 class="card-title text-success">{{ produk.nama_produk }}</h5>
+                    <p class="card-text small text-muted">{{ produk.deskripsi_produk|truncatewords:15 }}</p>
+                    <p class="fw-bold fs-5 mt-auto mb-2 text-danger">Rp {{ produk.harga_produk|floatformat:0|intcomma }}</p>
+                    <a href="{% url 'detail_produk_web' produk.id %}" class="btn btn-success">Lihat Detail</a>
                 </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center">
-                <p>Belum ada produk yang tersedia.</p>
             </div>
         </div>
         {% endfor %}
     </div>
-</div>
-{% endblock %}
+    {% else %}
+    <div class="alert alert-info text-center mt-5">Maaf, belum ada produk yang tersedia saat ini.</div>
+    {% endif %}
+</section>
+{% endblock content %}

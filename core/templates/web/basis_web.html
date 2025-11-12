@@ -1,78 +1,73 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}UD Barokah Jaya Beton{% endblock %}</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
-    <link href="/static/core/css/web.css" rel="stylesheet">
-    {% block extra_css %}{% endblock %}
+    <title>{% block title %}UD Barokah Jaya Beton{% endblock title %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/web.css' %}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <!-- Brand -->
-            <a class="navbar-brand fw-bold text-success" href="{% url 'beranda_pelanggan' %}">
-                UD Barokah Jaya Beton
+            <a class="navbar-brand text-success fw-bold" href="{% url 'home_web' %}">
+                Barokah Jaya Beton
             </a>
             
-            <!-- Mobile Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <!-- Navbar Content -->
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <!-- Main Navigation -->
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/web/' %}active{% endif %}" href="{% url 'beranda_pelanggan' %}">Beranda</a>
+                        <a class="nav-link {% if request.path == '/' or request.path == '/web/' %}active{% endif %}" href="{% url 'home_web' %}">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if '/web/produk/' in request.path %}active{% endif %}" href="{% url 'daftar_produk_web' %}">Produk</a>
+                        <a class="nav-link {% if '/produk/' in request.path %}active{% endif %}" href="{% url 'daftar_produk_web' %}">Produk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#kontak">Kontak</a>
                     </li>
                 </ul>
                 
-                <!-- Right Side Actions -->
                 <ul class="navbar-nav">
-                    <!-- Cart -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'keranjang_web' %}">
-                            <i class="bi bi-cart"></i>
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative" href="{% url 'keranjang_web' %}">
+                            <i class="bi bi-cart-fill fs-5 text-success"></i>
                             {% with cart_count=request.session.cart|length %}
                                 {% if cart_count > 0 %}
-                                    <span class="badge bg-success rounded-pill">{{ cart_count }}</span>
+                                    <span class="position-absolute top-10 start-80 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                                        {{ cart_count }}
+                                        <span class="visually-hidden">items in cart</span>
+                                    </span>
                                 {% endif %}
                             {% endwith %}
                         </a>
                     </li>
-                    
-                    <!-- Notifications -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-bell"></i>
-                        </a>
-                    </li>
-                    
-                    <!-- Account Dropdown -->
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-outline-success btn-sm px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            {% if not request.session.pelanggan_id %}
-                                <li><a class="dropdown-item" href="{% url 'login_web' %}">Login</a></li>
-                                <li><a class="dropdown-item" href="{% url 'register_web' %}">Register</a></li>
+                            {% if request.session.pelanggan_id %}
+                                Hai, {{ request.session.nama_pelanggan|truncatechars:10 }}
                             {% else %}
-                                <li><a class="dropdown-item" href="{% url 'akun_saya_web' %}">Akun Saya</a></li>
-                                <li><a class="dropdown-item" href="#">Pesanan Saya</a></li>
+                                Akun
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            {% if request.session.pelanggan_id %}
+                                <li><a class="dropdown-item" href="{% url 'akun_saya' %}">Akun Saya</a></li>
+                                <li><a class="dropdown-item" href="{% url 'daftar_pesanan_pelanggan' %}">Pesanan Saya</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'logout_web' %}">Logout</a></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout_pelanggan' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'login_pelanggan' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                                <li><a class="dropdown-item" href="{% url 'register_pelanggan' %}"><i class="bi bi-person-plus"></i> Registrasi</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -81,50 +76,50 @@
         </div>
     </nav>
     
-    <!-- Main Content -->
-    <main>
-        {% block content %}
-        {% endblock %}
+    <main style="padding-top: 80px;">
+        <div class="container-fluid">
+            {% block content %}
+            {% endblock content %}
+        </div>
     </main>
-    
-    <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
+
+    <footer class="bg-dark text-white pt-5 pb-4 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h5>UD Barokah Jaya Beton</h5>
-                    <p>Menyediakan beton berkualitas tinggi untuk kebutuhan konstruksi Anda.</p>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="text-success fw-bold">UD Barokah Jaya Beton</h5>
+                    <p class="small">Penyedia beton pracetak terbaik untuk proyek konstruksi Anda. Kualitas terjamin, harga bersaing.</p>
                 </div>
-                <div class="col-md-3">
-                    <h6>Quick Links</h6>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="text-white">Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'beranda_pelanggan' %}" class="text-decoration-none">Beranda</a></li>
-                        <li><a href="{% url 'daftar_produk_web' %}" class="text-decoration-none">Produk</a></li>
-                        <li><a href="#" class="text-decoration-none">Tentang Kami</a></li>
-                        <li><a href="#" class="text-decoration-none">Kontak</a></li>
+                        <li><a href="{% url 'home_web' %}" class="text-decoration-none text-muted">Beranda</a></li>
+                        <li><a href="{% url 'daftar_produk_web' %}" class="text-decoration-none text-muted">Katalog Produk</a></li>
+                        <li><a href="#faq" class="text-decoration-none text-muted">FAQ</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
-                    <h6>Hubungi Kami</h6>
-                    <address>
-                        Jl. Raya Konstruksi No. 123<br>
-                        Kota Beton, 12345<br>
-                        Phone: (021) 123-4567<br>
-                        Email: info@barokahjayabeton.com
-                    </address>
+                <div class="col-lg-3 col-md-6 mb-4" id="kontak">
+                    <h5 class="text-white">Hubungi Kami</h5>
+                    <ul class="list-unstyled small">
+                        <li><i class="bi bi-geo-alt-fill me-2 text-success"></i>Jl. Raya Beton No. 123, Jakarta</li>
+                        <li><i class="bi bi-telephone-fill me-2 text-success"></i>(021) 123-4567</li>
+                        <li><i class="bi bi-envelope-fill me-2 text-success"></i>info@barokahbeton.com</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-white">Media Sosial</h5>
+                    <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
+                    <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-whatsapp fs-4"></i></a>
                 </div>
             </div>
-            <hr>
-            <div class="text-center">
-                <p>&copy; 2025 UD Barokah Jaya Beton. All rights reserved.</p>
+            <div class="text-center pt-3 border-top border-secondary small">
+                &copy; 2025 UD Barokah Jaya Beton. All Rights Reserved.
             </div>
         </div>
     </footer>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="/static/core/js/web.js"></script>
-    {% block extra_js %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'core/js/web.js' %}"></script>
 </body>
 </html>

@@ -1,125 +1,109 @@
 {% extends 'web/basis_web.html' %}
+{% load static humanize %}
 
-{% block title %}Keranjang Belanja - UD Barokah Jaya Beton{% endblock %}
+{% block title %}Keranjang Belanja{% endblock title %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'beranda_pelanggan' %}">Beranda</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Keranjang</li>
-                </ol>
-            </nav>
+<section class="container my-5">
+    <h1 class="text-center mb-4 text-success fw-bold">Keranjang Belanja Anda</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
         </div>
-    </div>
-    
+    {% endfor %}
+    {% endif %}
+
+    {% if cart_data.cart_items %}
     <div class="row">
-        <div class="col-12">
-            <h1>Keranjang Belanja</h1>
-            
-            <!-- Login Warning -->
-            {% if not request.session.pelanggan_id %}
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                Anda harus <a href="{% url 'login_web' %}" class="alert-link">login</a> untuk melanjutkan pembayaran.
-            </div>
-            {% endif %}
-            
-            {% if cart_items %}
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="table-success">
-                        <tr>
-                            <th>Item</th>
-                            <th>Harga</th>
-                            <th>Jumlah</th>
-                            <th>Subtotal</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in cart_items %}
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    {% if item.product.foto_produk %}
-                                        <img src="{{ item.product.foto_produk.url }}" alt="{{ item.product.nama_produk }}" class="me-3" style="width: 80px; height: 80px; object-fit: cover;">
-                                    {% else %}
-                                        <img src="https://placehold.co/80x80/90EE90/059212?text={{ item.product.nama_produk|urlencode }}" alt="{{ item.product.nama_produk }}" class="me-3" style="width: 80px; height: 80px; object-fit: cover;">
-                                    {% endif %}
-                                    <div>
-                                        <h6 class="mb-0">{{ item.product.nama_produk }}</h6>
-                                        <small class="text-muted">Kategori: {{ item.product.kategori.nama_kategori }}</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Rp {{ item.product.harga_produk|floatformat:2 }}</td>
-                            <td>
-                                <div class="input-group" style="width: 120px;">
-                                    <button class="btn btn-outline-success" type="button">-</button>
-                                    <input type="number" class="form-control text-center" value="{{ item.quantity }}" min="1" max="{{ item.product.stok_produk }}">
-                                    <button class="btn btn-outline-success" type="button">+</button>
-                                </div>
-                            </td>
-                            <td>Rp {{ item.subtotal|floatformat:2 }}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Catatan Pesanan</h5>
-                            <textarea class="form-control" rows="3" placeholder="Tambahkan catatan khusus untuk pesanan Anda..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Ringkasan Pesanan</h5>
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>Subtotal</td>
-                                        <td class="text-end">Rp {{ total|floatformat:2 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ongkos Kirim</td>
-                                        <td class="text-end">Rp 0,00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Total</strong></td>
-                                        <td class="text-end"><strong>Rp {{ total|floatformat:2 }}</strong></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            {% if request.session.pelanggan_id %}
-                                <a href="#" class="btn btn-success w-100">Checkout</a>
-                            {% else %}
-                                <a href="{% url 'login_web' %}" class="btn btn-success w-100">Login untuk Checkout</a>
-                            {% endif %}
-                        </div>
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th>Produk</th>
+                                    <th class="text-center">Harga</th>
+                                    <th class="text-center">Kuantitas</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_data.cart_items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ item.gambar }}" alt="{{ item.nama }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                            <div>
+                                                <a href="{% url 'detail_produk_web' item.id %}" class="text-success fw-bold text-decoration-none">{{ item.nama }}</a>
+                                                <p class="small text-muted mb-0">Stok: {{ item.stok_tersedia|intcomma }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        Rp {{ item.harga|floatformat:0|intcomma }}
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <form method="post" action="{% url 'update_cart' item.id %}" class="d-flex justify-content-center">
+                                            {% csrf_token %}
+                                            <input type="number" name="quantity" value="{{ item.kuantitas }}" min="0" max="{{ item.stok_tersedia }}" 
+                                                class="form-control form-control-sm text-center me-2" style="width: 80px;" required
+                                                onchange="this.form.submit()"> </form>
+                                    </td>
+                                    <td class="text-end align-middle fw-bold">
+                                        Rp {{ item.subtotal|floatformat:0|intcomma }}
+                                    </td>
+                                    <td class="align-middle">
+                                        <form method="post" action="{% url 'remove_from_cart' item.id %}" onsubmit="return confirm('Yakin ingin menghapus {{ item.nama }}?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Item">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            {% else %}
-            <div class="alert alert-info text-center">
-                <i class="bi bi-cart-x me-2"></i>
-                Keranjang belanja Anda kosong. <a href="{% url 'daftar_produk_web' %}">Belanja sekarang</a>
+            
+            <a href="{% url 'daftar_produk_web' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Lanjut Belanja
+            </a>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-lg bg-light border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-bold border-bottom pb-2 mb-3">Ringkasan Pesanan</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Subtotal:</span>
+                        <span class="fw-bold">Rp {{ cart_data.total_price|floatformat:0|intcomma }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-grid mt-4">
+                        <a href="{% url 'checkout_web' %}" class="btn btn-success btn-lg fw-bold">
+                            <i class="bi bi-bag-check-fill me-2"></i> Lanjutkan ke Checkout
+                        </a>
+                    </div>
+                </div>
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
-{% endblock %}
+    {% else %}
+    <div class="alert alert-warning text-center mt-5 p-5">
+        <i class="bi bi-cart-x-fill fs-3 mb-3 d-block"></i>
+        <h4 class="mb-3">Keranjang Anda Kosong</h4>
+        <p>Ayo, temukan produk beton berkualitas yang Anda butuhkan!</p>
+        <a href="{% url 'daftar_produk_web' %}" class="btn btn-success mt-3">Mulai Belanja</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock content %}

@@ -1,0 +1,45 @@
+/* core/static/core/css/pelanggan.css */
+
+/* Warna aksen hijau ringan */
+:root {
+    --bs-success: #28a745; /* Bootstrap default green */
+    --main-green: #38a169; /* Slightly darker for better contrast */
+    --light-green: #e6ffe6; /* Very light green for backgrounds */
+}
+
+/* Mengubah warna primary dan sukses */
+.bg-success {
+    background-color: var(--main-green) !important;
+}
+
+.btn-success {
+    background-color: var(--main-green) !important;
+    border-color: var(--main-green) !important;
+}
+
+.btn-outline-success {
+    color: var(--main-green) !important;
+    border-color: var(--main-green) !important;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--main-green) !important;
+    color: white !important;
+}
+
+/* Styling body dan centering (dari base_auth.html) */
+.min-vh-100 {
+    min-height: 100vh;
+}
+
+/* Styling Card */
+.card-header {
+    border-bottom: none;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.card {
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}

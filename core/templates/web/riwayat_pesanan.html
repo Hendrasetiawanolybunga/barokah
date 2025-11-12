@@ -1,0 +1,60 @@
+{% extends 'web/basis_web.html' %}
+{% load static humanize %}
+
+{% block title %}Riwayat Pesanan{% endblock title %}
+
+{% block content %}
+<section class="container my-5">
+    <h1 class="text-center mb-4 text-success fw-bold">Riwayat Pesanan Anda</h1>
+
+    {% if pesanan_list %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered shadow-sm bg-white">
+            <thead class="bg-success text-white">
+                <tr>
+                    <th>ID Transaksi</th>
+                    <th>Waktu Pesan</th>
+                    <th class="text-end">Total Pembayaran</th>
+                    <th class="text-center">Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pesanan in pesanan_list %}
+                <tr>
+                    <td class="fw-bold">{{ pesanan.id }}</td>
+                    <td>{{ pesanan.waktu_checkout|date:"d M Y H:i" }}</td>
+                    
+                    <td class="text-end fw-bold text-danger">Rp {{ pesanan.total|floatformat:0|intcomma }}</td>
+                    
+                    <td class="text-center">
+                        {% if pesanan.status_transaksi == 'pending' %}
+                            <span class="badge bg-warning text-dark">{{ pesanan.get_status_transaksi_display }}</span>
+                        {% elif pesanan.status_transaksi == 'dibayar' %}
+                            <span class="badge bg-info text-dark">{{ pesanan.get_status_transaksi_display }}</span>
+                        {% elif pesanan.status_transaksi == 'selesai' %}
+                            <span class="badge bg-success">{{ pesanan.get_status_transaksi_display }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ pesanan.get_status_transaksi_display }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <a href="{% url 'detail_pesanan_pelanggan' pesanan.id %}" class="btn btn-sm btn-outline-success">
+                            Lihat Detail
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center mt-5 p-5">
+        <i class="bi bi-bag-x-fill fs-3 mb-3 d-block"></i>
+        <h4 class="mb-3">Anda belum memiliki riwayat pesanan.</h4>
+        <a href="{% url 'daftar_produk_web' %}" class="btn btn-success mt-3">Mulai Belanja Sekarang</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock content %}

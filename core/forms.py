@@ -3,6 +3,8 @@ from .models import Admin, Pelanggan, Kategori, Produk, Transaksi, DetailTransak
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 
+from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password, check_password
 
 class AdminLoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -143,8 +145,6 @@ class NotifikasiForm(forms.ModelForm):
             'is_read': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
-
-class PelangganRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'})

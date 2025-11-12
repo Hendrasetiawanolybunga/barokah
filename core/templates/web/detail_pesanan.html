@@ -1,0 +1,118 @@
+{% extends 'web/basis_web.html' %}
+{% load static humanize %}
+
+{% block title %}Detail Pesanan #{{ transaksi.id }}{% endblock title %}
+
+{% block content %}
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-success fw-bold">Detail Pesanan #{{ transaksi.id }}</h1>
+        <a href="{% url 'daftar_pesanan_pelanggan' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Kembali ke Riwayat
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3 border-bottom pb-2 text-success">Informasi Umum</h5>
+                    <div class="row small">
+                        <div class="col-6 mb-2">
+                            <strong>Status:</strong> 
+                            {% if transaksi.status_transaksi == 'pending' %}
+                                <span class="badge bg-warning text-dark">{{ transaksi.get_status_transaksi_display }}</span>
+                            {% elif transaksi.status_transaksi == 'dibayar' %}
+                                <span class="badge bg-info text-dark">{{ transaksi.get_status_transaksi_display }}</span>
+                            {% elif transaksi.status_transaksi == 'selesai' %}
+                                <span class="badge bg-success">{{ transaksi.get_status_transaksi_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ transaksi.get_status_transaksi_display }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-2">
+                            <strong>Waktu Pesan:</strong> {{ transaksi.waktu_checkout|date:"d F Y, H:i" }}
+                        </div>
+                        <div class="col-12 mb-2">
+                            <strong>Batas Waktu Bayar:</strong> 
+                            <span class="fw-bold text-danger">{{ transaksi.batas_waktu_bayar|date:"d F Y, H:i" }}</span>
+                            {% if transaksi.status_transaksi == 'pending' and transaksi.batas_waktu_bayar < now %}
+                                <span class="badge bg-danger">WAKTU HABIS</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light text-success fw-bold">Alamat Pengiriman</div>
+                <div class="card-body">
+                    <p class="mb-0">{{ transaksi.pelanggan.nama_pelanggan }} ({{ transaksi.pelanggan.no_hp }})</p>
+                    <p class="small text-muted mb-0">{{ transaksi.alamat_pengiriman|linebreaksbr }}</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light text-success fw-bold">Item Pesanan</div>
+                <ul class="list-group list-group-flush">
+                    {% for item in detail_items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{% url 'detail_produk_web' item.produk.id %}" class="fw-bold text-success text-decoration-none">{{ item.produk.nama_produk }}</a>
+                            <p class="small text-muted mb-0">{{ item.jumlah_produk }} x Rp {{ item.produk.harga_produk|floatformat:0|intcomma }}</p>
+                        </div>
+                        <span class="fw-bold text-end">Rp {{ item.sub_total|floatformat:0|intcomma }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-lg bg-light border-0 sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-bold border-bottom pb-2 mb-3">Ringkasan Biaya</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal Produk:</span>
+                        <span class="fw-bold">Rp {{ transaksi.total|floatformat:0|intcomma }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Biaya Pengiriman:</span>
+                        <span class="fw-bold text-info">
+                            Rp {{ transaksi.ongkir|floatformat:0|intcomma }}
+                            {% if transaksi.ongkir == 0 and transaksi.status_transaksi == 'pending' %}
+                                (Menunggu Admin)
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if transaksi.total_diskon > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Diskon:</span>
+                        <span class="fw-bold text-success">- Rp {{ transaksi.total_diskon|floatformat:0|intcomma }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5 class="fw-bold text-danger">TOTAL AKHIR:</h5>
+                        <h5 class="fw-bold text-danger">Rp {{ transaksi.total|floatformat:0|intcomma }}</h5>
+                    </div>
+                    
+                    {% if transaksi.status_transaksi == 'pending' %}
+                        <div class="d-grid">
+                            <button class="btn btn-warning fw-bold mt-3" disabled>
+                                <i class="bi bi-upload me-2"></i> Upload Bukti Bayar (Akan diimplementasikan)
+                            </button>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

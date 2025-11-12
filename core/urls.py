@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from . import pelanggan_views 
 urlpatterns = [
     # Autentikasi Admin
     path('masuk/', views.admin_login, name='admin_login'),
@@ -58,18 +58,24 @@ urlpatterns = [
     path('notifikasi/<int:pk>/hapus/', views.hapus_notifikasi, name='hapus_notifikasi'),
     
     # ==================== PORTAL PELANGGAN ====================
-    # Web Portal URLs
-    path('web/', views.beranda_pelanggan, name='beranda_pelanggan'),
-    path('web/produk/', views.daftar_produk_web, name='daftar_produk_web'),
-    path('web/produk/<int:id>/', views.detail_produk_web, name='detail_produk_web'),
-    path('web/keranjang/', views.keranjang_web, name='keranjang_web'),
+    path('pelanggan/login/', pelanggan_views.login_pelanggan, name='login_pelanggan'),
+    path('pelanggan/register/', pelanggan_views.register_pelanggan, name='register_pelanggan'),
+    path('pelanggan/logout/', pelanggan_views.logout_pelanggan, name='logout_pelanggan'),
+    path('pelanggan/', pelanggan_views.pelanggan_home, name='home_pelanggan'),
     
-    # Web Portal Authentication
-    path('web/login/', views.login_web, name='login_web'),
-    path('web/register/', views.register_web, name='register_web'),
-    path('web/logout/', views.logout_web, name='logout_web'),
-    path('web/akun/', views.akun_saya_web, name='akun_saya_web'),
     
-    # Cart AJAX endpoints
-    path('web/add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('web/', pelanggan_views.beranda_pelanggan, name='home_web'), # Alias untuk beranda
+    path('web/produk/', pelanggan_views.daftar_produk, name='daftar_produk_web'),
+    path('web/produk/<int:id>/', pelanggan_views.detail_produk, name='detail_produk_web'),
+    path('web/keranjang/', pelanggan_views.keranjang_web, name='keranjang_web'),
+    
+    path('web/keranjang/add/<int:id>/', pelanggan_views.add_to_cart, name='add_to_cart'),
+    path('web/keranjang/update/<int:id>/', pelanggan_views.update_cart, name='update_cart'),
+    path('web/keranjang/remove/<int:id>/', pelanggan_views.remove_from_cart, name='remove_from_cart'),
+    path('web/checkout/', pelanggan_views.checkout_web, name='checkout_web'),
+    
+    path('web/pesanan/', pelanggan_views.daftar_pesanan_pelanggan, name='daftar_pesanan_pelanggan'),
+    path('web/pesanan/<int:pk>/', pelanggan_views.detail_pesanan_pelanggan, name='detail_pesanan_pelanggan'),
+    
+    path('web/akun/', pelanggan_views.akun_saya, name='akun_saya'),
 ]

@@ -140,3 +140,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
 AUTH_USER_MODEL = 'core.Admin'
+
+# Tentukan URL login yang sebenarnya untuk aplikasi Anda.
+# Django mengarahkan ke sini saat user belum terotentikasi.
+LOGIN_URL = '/pelanggan/login/' 
+
+# Tentukan URL yang harus dituju setelah login berhasil.
+# Karena Anda memiliki view 'pelanggan_home', gunakan path-nya.
+LOGIN_REDIRECT_URL = '/web/'
+
+# Tentukan URL yang harus dituju setelah logout.
+LOGOUT_REDIRECT_URL = '/pelanggan/login/'
