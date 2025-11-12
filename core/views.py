@@ -876,6 +876,10 @@ def cetak_laporan_loyal_pdf(request):
 
 # ==================== PORTAL PELANGGAN ====================
 def beranda_pelanggan(request):
+    # Ensure cart exists in session (BEST PRACTICE)
+    if 'cart' not in request.session:
+        request.session['cart'] = {}
+    
     # Get featured products (for example, top 4 products)
     produk_unggulan = Produk.objects.filter(stok_produk__gt=0).order_by('-id')[:4]
     

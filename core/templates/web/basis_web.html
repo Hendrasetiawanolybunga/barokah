@@ -44,12 +44,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'keranjang_web' %}">
                             <i class="bi bi-cart"></i>
-                            {% with cart=request.session.cart|default:{} %}
-                                {% with cart_count=cart|length %}
-                                    {% if cart_count > 0 %}
-                                        <span class="badge bg-success rounded-pill">{{ cart_count }}</span>
-                                    {% endif %}
-                                {% endwith %}
+                            {% with cart_count=request.session.cart|length %}
+                                {% if cart_count > 0 %}
+                                    <span class="badge bg-success rounded-pill">{{ cart_count }}</span>
+                                {% endif %}
                             {% endwith %}
                         </a>
                     </li>
