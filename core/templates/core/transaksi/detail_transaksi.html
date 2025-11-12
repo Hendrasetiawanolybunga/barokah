@@ -1,0 +1,143 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}Detail Transaksi - Barokah{% endblock %}
+
+{% block page_title %}Detail Transaksi{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Detail Transaksi #{{ transaksi.id }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Informasi Transaksi</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>ID Transaksi</th>
+                            <td>{{ transaksi.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal</th>
+                            <td>{{ transaksi.tanggal|date:"d M Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pelanggan</th>
+                            <td>{{ transaksi.pelanggan.nama_pelanggan }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                {% if transaksi.status_transaksi == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif transaksi.status_transaksi == 'dibayar' %}
+                                    <span class="badge bg-info">Dibayar</span>
+                                {% elif transaksi.status_transaksi == 'dikirim' %}
+                                    <span class="badge bg-primary">Dikirim</span>
+                                {% elif transaksi.status_transaksi == 'selesai' %}
+                                    <span class="badge bg-success">Selesai</span>
+                                {% elif transaksi.status_transaksi == 'dibatalkan' %}
+                                    <span class="badge bg-danger">Dibatalkan</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Alamat Pengiriman</th>
+                            <td>{{ transaksi.alamat_pengiriman }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <td>Rp {{ transaksi.total|floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ongkir</th>
+                            <td>Rp {{ transaksi.ongkir|floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Diskon</th>
+                            <td>Rp {{ transaksi.total_diskon|floatformat:2 }}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>Detail Produk</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga</th>
+                                    <th>Sub Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in detail_transaksi %}
+                                <tr>
+                                    <td>{{ detail.produk.nama_produk }}</td>
+                                    <td>{{ detail.jumlah_produk }}</td>
+                                    <td>Rp {{ detail.produk.harga_produk|floatformat:2 }}</td>
+                                    <td>Rp {{ detail.sub_total|floatformat:2 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada detail transaksi</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            {% if transaksi.feedback %}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h5>Feedback</h5>
+                    <div class="border p-3">
+                        <p>{{ transaksi.feedback }}</p>
+                        {% if transaksi.fotofeedback %}
+                            <img src="{{ transaksi.fotofeedback.url }}" class="img-fluid" alt="Foto Feedback" style="max-width: 200px;">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'daftar_transaksi' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#hapusModal">
+                    <i class="bi bi-trash"></i> Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Konfirmasi Hapus -->
+<div class="modal fade" id="hapusModal" tabindex="-1" aria-labelledby="hapusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="hapusModalLabel">Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin menghapus transaksi ID {{ transaksi.id }}?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <form action="{% url 'hapus_transaksi' transaksi.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

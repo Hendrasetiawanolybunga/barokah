@@ -1,0 +1,223 @@
+{% extends 'core/basis.html' %}
+{% load humanize %}
+
+{% block title %}Dashboard - Barokah{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Pelanggan</h5>
+                            <h2>{{ total_pelanggan }}</h2>
+                        </div>
+                        <i class="bi bi-people fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Produk</h5>
+                            <h2>{{ total_produk }}</h2>
+                        </div>
+                        <i class="bi bi-box-seam fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Kategori</h5>
+                            <h2>{{ total_kategori }}</h2>
+                        </div>
+                        <i class="bi bi-tags fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Transaksi</h5>
+                            <h2>{{ total_transaksi }}</h2>
+                        </div>
+                        <i class="bi bi-cart fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pendapatan -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <h5 class="card-title">Pendapatan Total</h5>
+                    <h3>Rp {{ pendapatan_total|intcomma }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Pendapatan Bulanan (6 Bulan Terakhir)</h5>
+                </div>
+                <div class="card-body" style="height: 350px;"> <!-- Control chart container height -->
+                    <canvas id="pendapatanChart" height="300"></canvas> <!-- Set appropriate height -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Transactions and Categories -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Transaksi Terbaru</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pelanggan</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaksi in transaksi_terbaru %}
+                                <tr>
+                                    <td>{{ transaksi.id }}</td>
+                                    <td>{{ transaksi.pelanggan.nama_pelanggan }}</td>
+                                    <td>Rp {{ transaksi.total|intcomma }}</td>
+                                    <td>
+                                        {% if transaksi.status_transaksi == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif transaksi.status_transaksi == 'dibayar' %}
+                                            <span class="badge bg-info">Dibayar</span>
+                                        {% elif transaksi.status_transaksi == 'dikirim' %}
+                                            <span class="badge bg-primary">Dikirim</span>
+                                        {% elif transaksi.status_transaksi == 'selesai' %}
+                                            <span class="badge bg-success">Selesai</span>
+                                        {% elif transaksi.status_transaksi == 'dibatalkan' %}
+                                            <span class="badge bg-danger">Dibatalkan</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada transaksi</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Kategori dengan Produk Terbanyak</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th>Jumlah Produk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for kategori in kategori_produk %}
+                                <tr>
+                                    <td>{{ kategori.nama_kategori }}</td>
+                                    <td>{{ kategori.jumlah_produk }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center">Tidak ada kategori</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var ctx = document.getElementById('pendapatanChart').getContext('2d');
+    var pendapatanChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ data_bulan|safe }},
+            datasets: [{
+                label: 'Pendapatan (Rp)',
+                data: {{ data_pendapatan|safe }},
+                backgroundColor: 'rgba(5, 146, 18, 0.7)',
+                borderColor: 'rgba(5, 146, 18, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allow custom height
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

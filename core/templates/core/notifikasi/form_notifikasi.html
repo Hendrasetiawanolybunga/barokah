@@ -1,0 +1,49 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}{{ title }} - Barokah{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{{ title }}</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.pelanggan.id_for_label }}" class="form-label">Pelanggan</label>
+                    {{ form.pelanggan }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.tipe_pesan.id_for_label }}" class="form-label">Tipe Pesan</label>
+                    {{ form.tipe_pesan }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.isi_pesan.id_for_label }}" class="form-label">Isi Pesan</label>
+                    {{ form.isi_pesan }}
+                </div>
+                
+                <div class="mb-3 form-check">
+                    {{ form.is_read }}
+                    <label for="{{ form.is_read.id_for_label }}" class="form-check-label">Sudah Dibaca</label>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'daftar_notifikasi' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

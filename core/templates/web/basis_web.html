@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}UD Barokah Jaya Beton{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link href="/static/core/css/web.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand fw-bold text-success" href="{% url 'beranda_pelanggan' %}">
+                UD Barokah Jaya Beton
+            </a>
+            
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navbar Content -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Main Navigation -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/web/' %}active{% endif %}" href="{% url 'beranda_pelanggan' %}">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/web/produk/' in request.path %}active{% endif %}" href="{% url 'daftar_produk_web' %}">Produk</a>
+                    </li>
+                </ul>
+                
+                <!-- Right Side Actions -->
+                <ul class="navbar-nav">
+                    <!-- Cart -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'keranjang_web' %}">
+                            <i class="bi bi-cart"></i>
+                            {% with cart=request.session.cart|default:{} %}
+                                {% with cart_count=cart|length %}
+                                    {% if cart_count > 0 %}
+                                        <span class="badge bg-success rounded-pill">{{ cart_count }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        </a>
+                    </li>
+                    
+                    <!-- Notifications -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-bell"></i>
+                        </a>
+                    </li>
+                    
+                    <!-- Account Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if not request.session.pelanggan_id %}
+                                <li><a class="dropdown-item" href="{% url 'login_web' %}">Login</a></li>
+                                <li><a class="dropdown-item" href="{% url 'register_web' %}">Register</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'akun_saya_web' %}">Akun Saya</a></li>
+                                <li><a class="dropdown-item" href="#">Pesanan Saya</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout_web' %}">Logout</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>UD Barokah Jaya Beton</h5>
+                    <p>Menyediakan beton berkualitas tinggi untuk kebutuhan konstruksi Anda.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'beranda_pelanggan' %}" class="text-decoration-none">Beranda</a></li>
+                        <li><a href="{% url 'daftar_produk_web' %}" class="text-decoration-none">Produk</a></li>
+                        <li><a href="#" class="text-decoration-none">Tentang Kami</a></li>
+                        <li><a href="#" class="text-decoration-none">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Hubungi Kami</h6>
+                    <address>
+                        Jl. Raya Konstruksi No. 123<br>
+                        Kota Beton, 12345<br>
+                        Phone: (021) 123-4567<br>
+                        Email: info@barokahjayabeton.com
+                    </address>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2025 UD Barokah Jaya Beton. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/core/js/web.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

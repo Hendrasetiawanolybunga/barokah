@@ -1,0 +1,103 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}Daftar Notifikasi - Barokah{% endblock %}
+
+{% block page_title %}Daftar Notifikasi{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Notifikasi</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Daftar Notifikasi</h3>
+        <a href="{% url 'tambah_notifikasi' %}" class="btn btn-dark">
+            <i class="bi bi-plus-circle me-1"></i> Tambah Notifikasi
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pelanggan</th>
+                            <th>Tipe Pesan</th>
+                            <th>Isi Pesan</th>
+                            <th>Status</th>
+                            <th>Tanggal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for notifikasi in page_obj %}
+                        <tr>
+                            <td>{{ notifikasi.id }}</td>
+                            <td>{{ notifikasi.pelanggan.nama_pelanggan }}</td>
+                            <td>{{ notifikasi.tipe_pesan }}</td>
+                            <td>{{ notifikasi.isi_pesan|truncatewords:10 }}</td>
+                            <td>
+                                {% if notifikasi.is_read %}
+                                    <span class="badge bg-success">Dibaca</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Belum Dibaca</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ notifikasi.created_at|date:"d M Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'edit_notifikasi' notifikasi.id %}" class="btn btn-sm btn-warning btn-action" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger btn-action" 
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                        data-delete-url="{% url 'hapus_notifikasi' notifikasi.id %}"
+                                        data-item-name="Notifikasi untuk {{ notifikasi.pelanggan.nama_pelanggan }}"
+                                        title="Hapus">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">Tidak ada notifikasi</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

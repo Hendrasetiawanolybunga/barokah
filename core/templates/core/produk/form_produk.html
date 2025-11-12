@@ -1,0 +1,59 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}{{ title }} - Barokah{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{{ title }}</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.nama_produk.id_for_label }}" class="form-label">Nama Produk</label>
+                    {{ form.nama_produk }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.deskripsi_produk.id_for_label }}" class="form-label">Deskripsi Produk</label>
+                    {{ form.deskripsi_produk }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.foto_produk.id_for_label }}" class="form-label">Foto Produk</label>
+                    {{ form.foto_produk }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.stok_produk.id_for_label }}" class="form-label">Stok Produk</label>
+                    {{ form.stok_produk }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.harga_produk.id_for_label }}" class="form-label">Harga Produk</label>
+                    {{ form.harga_produk }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.kategori.id_for_label }}" class="form-label">Kategori</label>
+                    {{ form.kategori }}
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'daftar_produk' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

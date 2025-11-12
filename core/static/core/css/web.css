@@ -1,0 +1,134 @@
+/* Web Portal CSS */
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #059212 0%, #90EE90 100%);
+}
+
+.hero-section h1 {
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.product-card .card-img-top {
+    border-bottom: 1px solid #eee;
+}
+
+/* Feature Boxes */
+.feature-box {
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+}
+
+/* Contact Section */
+.contact-section .contact-info i {
+    color: #059212;
+}
+
+/* FAQ Section */
+.accordion-button:not(.collapsed) {
+    background-color: #90EE90;
+    color: #059212;
+}
+
+.accordion-button:focus {
+    border-color: #059212;
+    box-shadow: 0 0 0 0.2rem rgba(5, 146, 18, 0.25);
+}
+
+/* Footer */
+footer a {
+    color: #333;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #059212;
+    text-decoration: underline;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.navbar .badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: #f8f9fa;
+}
+
+.breadcrumb-item a {
+    color: #059212;
+}
+
+/* Buttons */
+.btn-success {
+    background-color: #059212;
+    border-color: #059212;
+}
+
+.btn-success:hover {
+    background-color: #047a0f;
+    border-color: #047a0f;
+}
+
+.btn-outline-success {
+    color: #059212;
+    border-color: #059212;
+}
+
+.btn-outline-success:hover {
+    background-color: #059212;
+    border-color: #059212;
+}
+
+/* Tables */
+.table-success {
+    --bs-table-bg: #90EE90;
+    --bs-table-striped-bg: #83e285;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #76d67a;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #7ddc7f;
+    --bs-table-hover-color: #000;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .hero-section {
+        text-align: center;
+    }
+    
+    .hero-section .btn {
+        margin-bottom: 20px;
+    }
+    
+    .feature-box {
+        margin-bottom: 20px;
+    }
+    
+    .contact-section .map-container {
+        margin-top: 20px;
+    }
+}

@@ -1,0 +1,96 @@
+{% extends 'web/basis_web.html' %}
+
+{% block title %}Register - UD Barokah Jaya Beton{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Registrasi Pelanggan</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.nama_pelanggan.id_for_label }}" class="form-label">Nama Lengkap</label>
+                                {{ form.nama_pelanggan }}
+                                {% if form.nama_pelanggan.errors %}
+                                    <div class="text-danger">{{ form.nama_pelanggan.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">{{ form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.no_hp.id_for_label }}" class="form-label">No. HP</label>
+                                {{ form.no_hp }}
+                                {% if form.no_hp.errors %}
+                                    <div class="text-danger">{{ form.no_hp.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="text-danger">{{ form.password1.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Konfirmasi Password</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="text-danger">{{ form.password2.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.alamat.id_for_label }}" class="form-label">Alamat</label>
+                            {{ form.alamat }}
+                            {% if form.alamat.errors %}
+                                <div class="text-danger">{{ form.alamat.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.tanggal_lahir.id_for_label }}" class="form-label">Tanggal Lahir</label>
+                            {{ form.tanggal_lahir }}
+                            {% if form.tanggal_lahir.errors %}
+                                <div class="text-danger">{{ form.tanggal_lahir.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Daftar</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Sudah punya akun? <a href="{% url 'login_web' %}">Login sekarang</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

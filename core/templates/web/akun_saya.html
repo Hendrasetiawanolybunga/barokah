@@ -1,0 +1,56 @@
+{% extends 'web/basis_web.html' %}
+
+{% block title %}Akun Saya - UD Barokah Jaya Beton{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'beranda_pelanggan' %}">Beranda</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Akun Saya</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <h1>Akun Saya</h1>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Informasi Profil</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Nama:</strong> {{ pelanggan.nama_pelanggan }}</p>
+                            <p><strong>Email:</strong> {{ pelanggan.email }}</p>
+                            <p><strong>No. HP:</strong> {{ pelanggan.no_hp }}</p>
+                            <p><strong>Alamat:</strong> {{ pelanggan.alamat }}</p>
+                            <p><strong>Tanggal Lahir:</strong> {{ pelanggan.tanggal_lahir }}</p>
+                            <a href="#" class="btn btn-outline-success">Edit Profil</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Riwayat Pesanan</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Fitur riwayat pesanan akan tersedia setelah implementasi sistem transaksi.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

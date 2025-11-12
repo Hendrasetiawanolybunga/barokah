@@ -1,0 +1,89 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}Daftar Kategori - Barokah{% endblock %}
+
+{% block page_title %}Daftar Kategori{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Kategori</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Daftar Kategori</h3>
+        <a href="{% url 'tambah_kategori' %}" class="btn btn-dark">
+            <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Kategori</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kategori in page_obj %}
+                        <tr>
+                            <td>{{ kategori.id }}</td>
+                            <td>{{ kategori.nama_kategori }}</td>
+                            <td>
+                                <a href="{% url 'edit_kategori' kategori.id %}" class="btn btn-sm btn-warning btn-action" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger btn-action" 
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                        data-delete-url="{% url 'hapus_kategori' kategori.id %}"
+                                        data-item-name="Kategori: {{ kategori.nama_kategori }}"
+                                        title="Hapus">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">Tidak ada kategori</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

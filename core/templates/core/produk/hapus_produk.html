@@ -1,0 +1,70 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}Hapus Produk - Barokah{% endblock %}
+
+{% block page_title %}Hapus Produk{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Konfirmasi Hapus Produk</h5>
+        </div>
+        <div class="card-body">
+            <p>Apakah Anda yakin ingin menghapus produk berikut?</p>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    {% if produk.foto_produk %}
+                        <img src="{{ produk.foto_produk.url }}" class="img-fluid" alt="{{ produk.nama_produk }}">
+                    {% else %}
+                        <div class="bg-light border d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">Tidak ada gambar</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>ID</th>
+                            <td>{{ produk.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nama Produk</th>
+                            <td>{{ produk.nama_produk }}</td>
+                        </tr>
+                        <tr>
+                            <th>Deskripsi</th>
+                            <td>{{ produk.deskripsi_produk }}</td>
+                        </tr>
+                        <tr>
+                            <th>Kategori</th>
+                            <td>{{ produk.kategori.nama_kategori }}</td>
+                        </tr>
+                        <tr>
+                            <th>Harga</th>
+                            <td>Rp {{ produk.harga_produk|floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Stok</th>
+                            <td>{{ produk.stok_produk }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'daftar_produk' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Batal
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Hapus Produk
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

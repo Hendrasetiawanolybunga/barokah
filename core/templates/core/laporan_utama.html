@@ -1,0 +1,156 @@
+{% extends 'core/basis.html' %}
+
+{% block title %}Laporan - Barokah{% endblock %}
+
+{% block page_title %}Laporan{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Laporan</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Laporan Transaksi & Pelanggan</h3>
+    </div>
+    
+    <!-- Laporan Transaksi -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Daftar Transaksi</h5>
+            <a href="{% url 'cetak_laporan_transaksi_pdf' %}?bulan={{ bulan_filter }}&tahun={{ tahun_filter }}&status={{ status_filter }}" class="btn btn-light">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Cetak PDF
+            </a>
+        </div>
+        <div class="card-body">
+            <!-- Filter Section -->
+            <div class="mb-4">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="bulan" class="form-label">Bulan</label>
+                            <select name="bulan" id="bulan" class="form-control">
+                                <option value="">Semua Bulan</option>
+                                {% for i in "123456789ABC" %}
+                                    <option value="{{ forloop.counter }}" {% if bulan_filter == forloop.counter|stringformat:"i" %}selected{% endif %}>
+                                        {{ forloop.counter }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tahun" class="form-label">Tahun</label>
+                            <select name="tahun" id="tahun" class="form-control">
+                                <option value="">Semua Tahun</option>
+                                <!-- KOREKSI: Gunakan daftar tahun yang unik dan terurut dari view -->
+                                {% for tahun in list_tahun %}
+                                    <option value="{{ tahun }}" {% if tahun_filter == tahun|stringformat:"i" %}selected{% endif %}>
+                                        {{ tahun }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Status Transaksi</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="">Semua Status</option>
+                                {% for value, label in status_choices %}
+                                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-dark w-100">
+                                <i class="bi bi-funnel me-1"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>ID Transaksi</th>
+                            <th>Pelanggan</th>
+                            <th>Tanggal</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaksi in transaksi_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ transaksi.id }}</td>
+                            <td>{{ transaksi.pelanggan.nama_pelanggan }}</td>
+                            <td>{{ transaksi.tanggal|date:"d M Y H:i" }}</td>
+                            <td>Rp {{ transaksi.total|floatformat:2 }}</td>
+                            <td>
+                                {% if transaksi.status_transaksi == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif transaksi.status_transaksi == 'dibayar' %}
+                                    <span class="badge bg-info">Dibayar</span>
+                                {% elif transaksi.status_transaksi == 'dikirim' %}
+                                    <span class="badge bg-primary">Dikirim</span>
+                                {% elif transaksi.status_transaksi == 'selesai' %}
+                                    <span class="badge bg-success">Selesai</span>
+                                {% elif transaksi.status_transaksi == 'dibatalkan' %}
+                                    <span class="badge bg-danger">Dibatalkan</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Tidak ada transaksi</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Laporan Pelanggan Loyal -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Pelanggan Loyal</h5>
+            <a href="{% url 'cetak_laporan_loyal_pdf' %}" class="btn btn-light">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Cetak PDF
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama Pelanggan</th>
+                            <th>Jumlah Transaksi</th>
+                            <th>Total Pembelian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pelanggan in pelanggan_loyal %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ pelanggan.nama_pelanggan }}</td>
+                            <td>{{ pelanggan.jumlah_transaksi }}</td>
+                            <td>Rp {{ pelanggan.total_pembelian|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">Tidak ada data pelanggan loyal</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
